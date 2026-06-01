@@ -49,10 +49,10 @@ const MULTIPLY = 100 / (SHEET_COLUMNS - 1)
 const css: string[] = []
 const keywords: { [name: string]: string[] } = {}
 const list: string[] = []
-const groups: { [name: string]: string[] } = { neko: [] }
+const groups: { [name: string]: string[] } = { aris: [] }
 
 for (const emoji of custom) {
-  groups['neko'].push(emoji.name)
+  groups['aris'].push(emoji.name)
   list.push(emoji.name)
   keywords[emoji.name] = emoji.keywords
 
@@ -163,9 +163,9 @@ ${css.map(v => `  ${v}`).join('\n')}
 const data = {
   groups: [
     {
-      id: 'neko',
-      name: 'Neko',
-      list: groups['neko'] ? groups['neko'] : [],
+      id: 'aris',
+      name: 'Aris',
+      list: groups['aris'] ? groups['aris'] : [],
     },
     {
       id: 'emotion',

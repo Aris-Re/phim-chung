@@ -1,5 +1,5 @@
 <template>
-  <div class="chat">
+  <div class="chat" :class="{ overlay }">
     <ul class="chat-history" ref="history" @click="onClick">
       <template v-for="(message, index) in history">
         <li
@@ -11,14 +11,14 @@
           }"
         >
           <div class="author" @contextmenu.stop.prevent="onContext($event, { member: member(message.id) })">
-            <neko-avatar class="avatar" :seed="member(message.id).displayname" :size="40" />
+            <aris-avatar class="avatar" :seed="member(message.id).displayname" :size="overlay ? 32 : 40" />
           </div>
           <div class="content">
             <div class="content-head">
               <span>{{ member(message.id).displayname }}</span>
               <span class="timestamp">{{ timestamp(message.created) }}</span>
             </div>
-            <neko-markdown class="content-body" :source="message.content" />
+            <aris-markdown class="content-body" :source="message.content" />
           </div>
         </li>
         <li :key="index" class="event" v-if="message.type === 'event'">
@@ -38,26 +38,140 @@
         </li>
       </template>
     </ul>
-    <neko-context ref="context" />
+    <aris-context ref="context" />
     <div v-if="!muted" class="chat-send">
-      <div class="accent" />
+      <div v-if="!overlay" class="accent" />
       <div class="text-container">
-        <textarea ref="input" :placeholder="$t('send_a_message')" @keydown="onKeyDown" v-model="content" />
-        <neko-emoji v-if="emoji" @picked="onEmojiPicked" @done="emoji = false" />
+        <textarea
+          ref="input"
+          :placeholder="$t('send_a_message')"
+          @keydown="onKeyDown"
+          v-model="content"
+        />
+        <aris-emoji v-if="emoji" @picked="onEmojiPicked" @done="emoji = false" />
         <i class="emoji-menu fas fa-laugh" @click.stop.prevent="onEmoji"></i>
       </div>
+      <button v-if="overlay" type="button" class="send-btn" :disabled="!content.trim()" @click.stop.prevent="send">
+        <i class="fas fa-arrow-right" />
+      </button>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
   .chat {
+    --border-color: rgba(245, 240, 230, 0.08);
     flex: 1;
     flex-direction: column;
     display: flex;
     max-height: 100%;
     max-width: 100%;
     overflow-x: hidden;
+
+    &.overlay {
+      max-height: none;
+      gap: 8px;
+
+      .chat-history {
+        flex: 0 1 auto;
+        max-height: 140px;
+        overflow-y: auto;
+        background: $overlay-black;
+        border-radius: 10px;
+        padding: 8px 10px;
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar {
+          display: none;
+        }
+
+        li.message {
+          padding: 6px 0 0;
+          border-top: none;
+          flex-direction: row-reverse;
+
+          &:first-child {
+            padding-top: 0;
+          }
+
+          .author {
+            width: 32px;
+            height: 32px;
+            margin-right: 0;
+            margin-left: 8px;
+            background: transparent;
+          }
+
+          .content {
+            background: transparent;
+
+            .content-head span {
+              font-size: 12px;
+            }
+
+            ::v-deep .content-body {
+              font-size: 14px;
+              line-height: 1.35;
+            }
+          }
+
+          &.bulk .author {
+            visibility: hidden;
+            height: 0;
+            margin: 0;
+          }
+        }
+
+        li.event {
+          display: none;
+        }
+      }
+
+      .chat-send {
+        height: auto;
+        max-height: none;
+        padding: 0;
+        flex-direction: row;
+        align-items: flex-end;
+        gap: 8px;
+
+        .text-container {
+          flex: 1;
+          min-height: 44px;
+          background: $overlay-black;
+          border-radius: 10px;
+
+          textarea {
+            font-size: 14px;
+            min-height: 34px;
+          }
+
+          .emoji-menu {
+            color: $cream-white;
+            opacity: 0.85;
+          }
+        }
+
+        .send-btn {
+          flex-shrink: 0;
+          width: 44px;
+          height: 44px;
+          border: none;
+          border-radius: 10px;
+          background: $overlay-black;
+          color: $cream-white;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          &:disabled {
+            opacity: 0.35;
+            cursor: default;
+          }
+        }
+      }
+    }
 
     .chat-history {
       flex: 1;
@@ -342,7 +456,7 @@
 </style>
 
 <script lang="ts">
-  import { Component, Ref, Watch, Vue } from 'vue-property-decorator'
+  import { Component, Ref, Watch, Vue, Prop } from 'vue-property-decorator'
   import { formatRelative } from 'date-fns'
 
   import { Member } from '~/neko/types'
@@ -355,15 +469,17 @@
   const length = 512 // max length of message
 
   @Component({
-    name: 'neko-chat',
+    name: 'aris-chat',
     components: {
-      'neko-markdown': Markdown,
-      'neko-context': Content,
-      'neko-emoji': Emoji,
-      'neko-avatar': Avatar,
+      'aris-markdown': Markdown,
+      'aris-context': Content,
+      'aris-emoji': Emoji,
+      'aris-avatar': Avatar,
     },
   })
   export default class extends Vue {
+    @Prop({ type: Boolean, default: false }) readonly overlay!: boolean
+
     @Ref('input') readonly _input!: HTMLTextAreaElement
     @Ref('history') readonly _history!: HTMLElement
     @Ref('context') readonly _context!: any
@@ -462,6 +578,14 @@
       }
     }
 
+    send() {
+      if (this.muted || this.content.trim() === '') {
+        return
+      }
+      this.$accessor.chat.sendMessage(this.content.trim())
+      this.content = ''
+    }
+
     onKeyDown(event: KeyboardEvent) {
       if (this.muted) {
         return
@@ -492,9 +616,7 @@
         return
       }
 
-      this.$accessor.chat.sendMessage(this.content)
-
-      this.content = ''
+      this.send()
       event.preventDefault()
     }
   }

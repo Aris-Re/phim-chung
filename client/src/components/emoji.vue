@@ -1,5 +1,5 @@
 <template>
-  <div class="neko-emoji" v-on-clickaway="onClickAway">
+  <div class="aris-emoji" v-on-clickaway="onClickAway">
     <div class="search">
       <div class="search-contianer">
         <input type="text" ref="search" v-model="search" />
@@ -59,7 +59,7 @@
 <style lang="scss" scoped>
   $emoji-width: 300px;
 
-  .neko-emoji {
+  .aris-emoji {
     position: absolute;
     z-index: 10000;
     width: $emoji-width;
@@ -249,7 +249,7 @@
             &.group-recent::before {
               content: '\f017';
             }
-            &.group-neko::before {
+            &.group-aris::before {
               content: '\f6be';
             }
             &.group-emotion::before {
@@ -292,7 +292,7 @@
   import { get } from '../utils/localstorage'
 
   @Component({
-    name: 'neko-emoji',
+    name: 'aris-emoji',
     directives: {
       onClickaway,
     },

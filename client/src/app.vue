@@ -1,15 +1,21 @@
 <template>
-  <div id="neko" :class="[!videoOnly && side ? 'expanded' : '']">
+  <div
+    id="aris"
+    :class="[
+      !videoOnly && side ? 'expanded' : '',
+      { 'video-fullscreen': fullscreen, 'mobile-overlay-chat': fullscreen && isMobile },
+    ]"
+  >
     <template v-if="!$client.supported">
-      <neko-unsupported />
+      <aris-unsupported />
     </template>
     <template v-else>
-      <main class="neko-main">
+      <main class="aris-main">
         <div v-if="!videoOnly" class="header-container">
-          <neko-header />
+          <aris-header />
         </div>
         <div class="video-container">
-          <neko-video
+          <aris-video
             ref="video"
             :hideControls="hideControls"
             :extraControls="isEmbedMode"
@@ -17,26 +23,26 @@
           />
         </div>
         <div v-if="!videoOnly" class="room-container">
-          <neko-members />
+          <aris-members />
           <div class="room-menu">
             <div class="settings">
-              <neko-menu />
+              <aris-menu />
             </div>
             <div class="controls">
-              <neko-controls :shakeKbd="shakeKbd" />
+              <aris-controls :shakeKbd="shakeKbd" />
             </div>
             <div class="emotes">
-              <neko-emotes />
+              <aris-emotes />
             </div>
           </div>
         </div>
       </main>
-      <neko-side v-if="!videoOnly && side" />
-      <neko-connect v-if="!connected" />
-      <neko-about v-if="about" />
+      <aris-side v-if="!videoOnly && side && !(fullscreen && isMobile)" />
+      <aris-connect v-if="!connected" />
+      <aris-about v-if="about" />
       <notifications
         v-if="!videoOnly"
-        group="neko"
+        group="aris"
         position="top left"
         style="top: 50px; pointer-events: none"
         :ignoreDuplicates="true"
@@ -46,7 +52,7 @@
 </template>
 
 <style lang="scss">
-  #neko {
+  #aris {
     position: absolute;
     top: 0;
     left: 0;
@@ -57,7 +63,7 @@
     flex-direction: row;
     display: flex;
 
-    .neko-main {
+    .aris-main {
       min-width: 360px;
       max-width: 100%;
       flex-grow: 1;
@@ -117,6 +123,23 @@
         }
       }
     }
+
+    &.mobile-overlay-chat {
+      .header-container,
+      .room-container {
+        display: none !important;
+      }
+
+      .aris-main {
+        height: 100vh;
+        min-height: 100vh;
+      }
+
+      .video-container {
+        flex: 1;
+        min-height: 0;
+      }
+    }
   }
 
   @media only screen and (max-width: 1024px) {
@@ -131,16 +154,16 @@
       display: none;
     }
 
-    #neko {
+    #aris {
       position: relative;
       flex-direction: column;
       max-height: initial !important;
 
-      .neko-main {
+      .aris-main {
         height: 100vh;
       }
 
-      .neko-menu {
+      .aris-menu {
         height: 100vh;
         width: 100% !important;
       }
@@ -148,20 +171,24 @@
   }
 
   @media only screen and (max-width: 1024px) and (orientation: portrait) {
-    #neko {
-      &.expanded .neko-main {
+    #aris {
+      &.expanded .aris-main {
         height: 40vh;
       }
 
-      &.expanded .neko-menu {
+      &.expanded .aris-menu {
         height: 60vh;
         width: 100% !important;
+      }
+
+      &.expanded.mobile-overlay-chat .aris-main {
+        height: 100vh;
       }
     }
   }
 
   @media only screen and (max-width: 768px) {
-    #neko .neko-main .room-container {
+    #aris .aris-main .room-container {
       display: none;
     }
   }
@@ -182,24 +209,30 @@
   import Unsupported from '~/components/unsupported.vue'
 
   @Component({
-    name: 'neko',
+    name: 'aris',
     components: {
-      'neko-connect': Connect,
-      'neko-video': Video,
-      'neko-menu': Menu,
-      'neko-side': Side,
-      'neko-controls': Controls,
-      'neko-members': Members,
-      'neko-emotes': Emotes,
-      'neko-about': About,
-      'neko-header': Header,
-      'neko-unsupported': Unsupported,
+      'aris-connect': Connect,
+      'aris-video': Video,
+      'aris-menu': Menu,
+      'aris-side': Side,
+      'aris-controls': Controls,
+      'aris-members': Members,
+      'aris-emotes': Emotes,
+      'aris-about': About,
+      'aris-header': Header,
+      'aris-unsupported': Unsupported,
     },
   })
   export default class extends Vue {
     @Ref('video') video!: Video
 
     shakeKbd = false
+    isMobile = false
+    private mobileMedia: MediaQueryList | null = null
+
+    get fullscreen() {
+      return this.$accessor.client.fullscreen
+    }
 
     get volume() {
       const numberParam = parseFloat(new URL(location.href).searchParams.get('volume') || '1.0')
@@ -222,6 +255,20 @@
       return this.isCastMode || this.isEmbedMode
     }
 
+    mounted() {
+      this.mobileMedia = window.matchMedia('(max-width: 768px)')
+      this.isMobile = this.mobileMedia.matches
+      this.mobileMedia.addEventListener('change', this.onMobileMediaChange)
+    }
+
+    beforeDestroy() {
+      this.mobileMedia?.removeEventListener('change', this.onMobileMediaChange)
+    }
+
+    onMobileMediaChange = (event: MediaQueryListEvent) => {
+      this.isMobile = event.matches
+    }
+
     @Watch('volume', { immediate: true })
     onVolume(volume: number) {
       if (new URL(location.href).searchParams.has('volume')) {
@@ -240,8 +287,6 @@
     @Watch('side')
     onSide(side: boolean) {
       if (side) {
-        console.log('side enabled')
-        // scroll to the side
         this.$nextTick(() => {
           const side = document.querySelector('aside')
           if (side) {

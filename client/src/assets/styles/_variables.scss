@@ -1,30 +1,35 @@
-$text-family: Whitney, Helvetica Neue, Helvetica, Arial, sans-serif;;
-$text-size:   14px;
-$text-normal: #dcddde;
-$text-muted: #72767d;
-$text-link: #00b0f4;
+// Aris — minimalist black & white theme
+$cream-white: #f5f0e6;
+$soft-black: #1c1c1c;
+$soft-black-muted: #2a2a2a;
+$overlay-black: rgba(28, 28, 28, 0.68);
 
-$interactive-normal: #b9bbbe;
-$interactive-hover: #dcddde;
-$interactive-muted: #4f545c;
+$text-family: Whitney, Helvetica Neue, Helvetica, Arial, sans-serif;
+$text-size: 14px;
+$text-normal: $cream-white;
+$text-muted: rgba($cream-white, 0.55);
+$text-link: $cream-white;
 
-$background-primary: #36393f;
-$background-secondary: #2f3136;
-$background-tertiary: #202225;
-$background-accent: #4f545c;
-$background-floating: #18191c;
-$background-modifier-hover: rgba(79, 84, 92, 0.16);
-$background-modifier-active: rgba(79, 84, 92, 0.24);
-$background-modifier-selected: rgba(79, 84, 92, 0.32);
-$background-modifier-accent: hsla(0, 0%, 100%, 0.06);
+$interactive-normal: rgba($cream-white, 0.75);
+$interactive-hover: $cream-white;
+$interactive-muted: rgba($cream-white, 0.4);
 
-$elevation-low: 0 1px 0 rgba(4, 4, 5, 0.2), 0 1.5px 0 rgba(6, 6, 7, 0.05), 0 2px 0 rgba(4, 4, 5, 0.05);
-$elevation-high: 0 8px 16px rgba(0, 0, 0, 0.24);
+$background-primary: $soft-black-muted;
+$background-secondary: $soft-black;
+$background-tertiary: #141414;
+$background-accent: rgba($cream-white, 0.12);
+$background-floating: #0f0f0f;
+$background-modifier-hover: rgba($cream-white, 0.06);
+$background-modifier-active: rgba($cream-white, 0.1);
+$background-modifier-selected: rgba($cream-white, 0.14);
+$background-modifier-accent: rgba($cream-white, 0.06);
 
-$style-primary: #19bd9c;
-$style-error: #d32f2f;
+$elevation-low: 0 1px 0 rgba(0, 0, 0, 0.4);
+$elevation-high: 0 8px 24px rgba(0, 0, 0, 0.45);
+
+$style-primary: $cream-white;
+$style-error: #c45c5c;
 
 $menu-height: 40px;
 $controls-height: 125px;
 $side-width: 400px;
-

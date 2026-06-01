@@ -8,6 +8,8 @@ export const state = () => ({
   tab: get<string>('tab', 'chat'),
   about: false,
   about_page: '',
+  fullscreen: false,
+  overlayChatOpen: true,
 })
 
 export const getters = getterTree(state, {})
@@ -30,6 +32,18 @@ export const mutations = mutationTree(state, {
   setSide(state, side: boolean) {
     state.side = side
     set('side', side)
+  },
+  setFullscreen(state, fullscreen: boolean) {
+    state.fullscreen = fullscreen
+    if (fullscreen) {
+      state.overlayChatOpen = true
+    }
+  },
+  toggleOverlayChat(state) {
+    state.overlayChatOpen = !state.overlayChatOpen
+  },
+  setOverlayChatOpen(state, open: boolean) {
+    state.overlayChatOpen = open
   },
 })
 

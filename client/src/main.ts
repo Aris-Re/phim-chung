@@ -32,4 +32,4 @@ new Vue({
     this.$client.init(this)
     this.$accessor.initialise()
   },
-}).$mount('#neko')
+}).$mount('#aris')

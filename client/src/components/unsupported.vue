@@ -2,7 +2,7 @@
   <div class="unsupported">
     <div class="window">
       <div class="logo">
-        <img src="@/assets/images/logo.svg" alt="n.eko" />
+        <img src="@/assets/images/logo.svg" alt="Aris" />
         <span><b>n</b>.eko</span>
       </div>
       <div class="message">
@@ -70,6 +70,6 @@
 <script lang="ts">
   import { Component, Vue } from 'vue-property-decorator'
 
-  @Component({ name: 'neko-unsupported' })
+  @Component({ name: 'aris-unsupported' })
   export default class extends Vue {}
 </script>

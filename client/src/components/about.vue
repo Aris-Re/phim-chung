@@ -3,7 +3,7 @@
     <div class="window">
       <div class="loading" v-if="loading">
         <div class="logo">
-          <img src="@/assets/images/logo.svg" alt="n.eko" />
+          <img src="@/assets/images/logo.svg" alt="Aris" />
           <span><b>N</b>.EKO</span>
         </div>
         <div class="loader">
@@ -134,7 +134,7 @@
 <script lang="ts">
   import { Component, Vue } from 'vue-property-decorator'
 
-  @Component({ name: 'neko-about' })
+  @Component({ name: 'aris-about' })
   export default class extends Vue {
     loading = false
 

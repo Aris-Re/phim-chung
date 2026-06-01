@@ -1,8 +1,8 @@
 <template>
   <div class="header">
-    <a href="https://github.com/m1k1o/neko" title="Github repository" target="_blank" class="neko">
-      <img src="@/assets/images/logo.svg" alt="n.eko" />
-      <span><b>n</b>.eko</span>
+    <a href="#" title="Aris" class="aris-brand" @click.stop.prevent>
+      <img src="@/assets/images/logo.svg" alt="Aris" />
+      <span><b>Aris</b></span>
     </a>
     <ul class="menu">
       <li>
@@ -59,7 +59,7 @@
     flex-direction: row;
     align-items: center;
 
-    .neko {
+    .aris-brand {
       flex: 1;
       display: flex;
       justify-content: flex-start;
@@ -160,7 +160,7 @@
   import { Component, Vue } from 'vue-property-decorator'
   import { AdminLockResource } from '~/neko/messages'
 
-  @Component({ name: 'neko-settings' })
+  @Component({ name: 'aris-header' })
   export default class extends Vue {
     get admin() {
       return this.$accessor.user.admin

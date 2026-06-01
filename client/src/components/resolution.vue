@@ -104,7 +104,7 @@
   import { VueContext } from 'vue-context'
 
   @Component({
-    name: 'neko-resolution',
+    name: 'aris-resolution',
     components: {
       'vue-context': VueContext,
     },

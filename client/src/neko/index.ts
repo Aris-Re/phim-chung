@@ -76,7 +76,7 @@ export class NekoClient extends BaseClient implements EventEmitter<NekoEvents> {
   /////////////////////////////
   protected [EVENT.RECONNECTING]() {
     this.$vue.$notify({
-      group: 'neko',
+      group: 'aris',
       type: 'warning',
       title: this.$vue.$t('connection.reconnecting') as string,
       duration: 5000,
@@ -93,12 +93,12 @@ export class NekoClient extends BaseClient implements EventEmitter<NekoEvents> {
     this.$accessor.setConnected(true)
 
     this.$vue.$notify({
-      group: 'neko',
+      group: 'aris',
       clean: true,
     })
 
     this.$vue.$notify({
-      group: 'neko',
+      group: 'aris',
       type: 'success',
       title: this.$vue.$t('connection.connected') as string,
       duration: 5000,
@@ -110,7 +110,7 @@ export class NekoClient extends BaseClient implements EventEmitter<NekoEvents> {
     this.cleanup()
 
     this.$vue.$notify({
-      group: 'neko',
+      group: 'aris',
       type: 'error',
       title: this.$vue.$t('connection.disconnected') as string,
       text: reason ? reason.message : undefined,
@@ -233,7 +233,7 @@ export class NekoClient extends BaseClient implements EventEmitter<NekoEvents> {
 
     if (this.id === id) {
       this.$vue.$notify({
-        group: 'neko',
+        group: 'aris',
         type: 'info',
         title: this.$vue.$t('notifications.controls_taken', {
           name: member.id == this.id && this.$vue.$te('you') ? this.$vue.$t('you') : member.displayname,
@@ -260,7 +260,7 @@ export class NekoClient extends BaseClient implements EventEmitter<NekoEvents> {
 
     if (this.id === id) {
       this.$vue.$notify({
-        group: 'neko',
+        group: 'aris',
         type: 'info',
         title: this.$vue.$t('notifications.controls_released', {
           name: member.id == this.id && this.$vue.$te('you') ? this.$vue.$t('you') : member.displayname,
@@ -285,7 +285,7 @@ export class NekoClient extends BaseClient implements EventEmitter<NekoEvents> {
     }
 
     this.$vue.$notify({
-      group: 'neko',
+      group: 'aris',
       type: 'info',
       title: this.$vue.$t('notifications.controls_has', { name: member.displayname }) as string,
       text: this.$vue.$t('notifications.controls_has_alt') as string,
@@ -301,7 +301,7 @@ export class NekoClient extends BaseClient implements EventEmitter<NekoEvents> {
     }
 
     this.$vue.$notify({
-      group: 'neko',
+      group: 'aris',
       type: 'info',
       title: this.$vue.$t('notifications.controls_requesting', { name: member.displayname }) as string,
       duration: 5000,

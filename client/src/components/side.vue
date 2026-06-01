@@ -1,5 +1,5 @@
 <template>
-  <aside class="neko-menu">
+  <aside class="aris-menu">
     <div class="tabs-container">
       <ul>
         <li :class="{ active: tab === 'chat' }" @click.stop.prevent="change('chat')">
@@ -17,15 +17,15 @@
       </ul>
     </div>
     <div class="page-container">
-      <neko-chat v-if="tab === 'chat'" />
-      <neko-files v-if="tab === 'files'" />
-      <neko-settings v-if="tab === 'settings'" />
+      <aris-chat v-if="tab === 'chat'" />
+      <aris-files v-if="tab === 'files'" />
+      <aris-settings v-if="tab === 'settings'" />
     </div>
   </aside>
 </template>
 
 <style lang="scss">
-  .neko-menu {
+  .aris-menu {
     width: $side-width;
     background-color: $background-primary;
     flex-shrink: 0;
@@ -86,11 +86,11 @@
   import Files from '~/components/files.vue'
 
   @Component({
-    name: 'neko',
+    name: 'aris-side',
     components: {
-      'neko-settings': Settings,
-      'neko-chat': Chat,
-      'neko-files': Files,
+      'aris-settings': Settings,
+      'aris-chat': Chat,
+      'aris-files': Files,
     },
   })
   export default class extends Vue {

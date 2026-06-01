@@ -1,9 +1,9 @@
 <template>
   <div class="connect">
     <div class="window">
-      <div class="logo" title="About n.eko" @click.stop.prevent="about">
-        <img src="@/assets/images/logo.svg" alt="n.eko" />
-        <span><b>n</b>.eko</span>
+      <div class="logo" title="About Aris" @click.stop.prevent="about">
+        <img src="@/assets/images/logo.svg" alt="Aris" />
+        <span><b>Aris</b></span>
       </div>
       <form class="message" v-if="!connecting" @submit.stop.prevent="connect">
         <span v-if="!autoPassword">{{ $t('connect.login_title') }}</span>
@@ -149,7 +149,7 @@
 <script lang="ts">
   import { Component, Vue } from 'vue-property-decorator'
 
-  @Component({ name: 'neko-connect' })
+  @Component({ name: 'aris-connect' })
   export default class extends Vue {
     private autoPassword: string | null = new URL(location.href).searchParams.get('pwd')
 

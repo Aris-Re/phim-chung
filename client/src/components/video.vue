@@ -5,7 +5,7 @@
         <video ref="video" playsinline />
         <div class="emotes">
           <template v-for="(emote, index) in emotes">
-            <neko-emote :id="index" :key="index" />
+            <aris-emote :id="index" :key="index" />
           </template>
         </div>
         <textarea
@@ -36,6 +36,39 @@
           <i class="fas fa-volume-up" />
         </div>
         <div ref="aspect" class="player-aspect" />
+        <div v-if="fullscreen && isMobile" class="chat-overlay-stack" @click.stop @touchstart.stop>
+          <div v-show="overlayChatOpen" class="chat-overlay">
+            <aris-chat overlay />
+          </div>
+          <ul class="chat-overlay-actions">
+            <li>
+              <i
+                class="fas fa-compress"
+                @click.stop.prevent="exitFullscreen"
+                v-tooltip="{ content: 'Exit fullscreen', placement: 'left', offset: 5, boundariesElement: 'body' }"
+              />
+            </li>
+            <li>
+              <i
+                class="fas fa-cog"
+                @click.stop.prevent="openOverlaySettings"
+                v-tooltip="{ content: 'Settings', placement: 'left', offset: 5, boundariesElement: 'body' }"
+              />
+            </li>
+            <li>
+              <i
+                :class="['fas', overlayChatOpen ? 'fa-chevron-right' : 'fa-comment-alt']"
+                @click.stop.prevent="toggleOverlayChat"
+                v-tooltip="{
+                  content: overlayChatOpen ? 'Hide chat' : 'Show chat',
+                  placement: 'left',
+                  offset: 5,
+                  boundariesElement: 'body',
+                }"
+              />
+            </li>
+          </ul>
+        </div>
       </div>
       <ul v-if="!fullscreen && !hideControls" class="video-menu top">
         <li><i @click.stop.prevent="requestFullscreen" class="fas fa-expand"></i></li>
@@ -72,8 +105,8 @@
           <i class="fas fa-keyboard" />
         </li>
       </ul>
-      <neko-resolution ref="resolution" v-if="admin" />
-      <neko-clipboard ref="clipboard" v-if="hosting && (!clipboard_read_available || !clipboard_write_available)" />
+      <aris-resolution ref="resolution" v-if="admin" />
+      <aris-clipboard ref="clipboard" v-if="hosting && (!clipboard_read_available || !clipboard_write_available)" />
     </div>
   </div>
 </template>
@@ -205,6 +238,48 @@
           display: block;
           padding-bottom: 56.25%;
         }
+
+        .chat-overlay-stack {
+          position: absolute;
+          right: 12px;
+          bottom: max(12px, env(safe-area-inset-bottom, 12px));
+          left: auto;
+          z-index: 20;
+          display: flex;
+          flex-direction: row;
+          align-items: flex-end;
+          gap: 8px;
+          max-width: calc(100% - 24px);
+          pointer-events: auto;
+
+          .chat-overlay {
+            width: min(320px, calc(100vw - 80px));
+            max-height: min(220px, 40vh);
+          }
+
+          .chat-overlay-actions {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+
+            li i {
+              width: 32px;
+              height: 32px;
+              background: $overlay-black;
+              border-radius: 50%;
+              line-height: 32px;
+              font-size: 14px;
+              text-align: center;
+              color: $cream-white;
+              cursor: pointer;
+              display: block;
+            }
+          }
+        }
       }
     }
   }
@@ -218,6 +293,7 @@
   import Emote from './emote.vue'
   import Resolution from './resolution.vue'
   import Clipboard from './clipboard.vue'
+  import Chat from './chat.vue'
 
   // @ts-ignore
   import GuacamoleKeyboard from '~/utils/guacamole-keyboard.ts'
@@ -225,11 +301,12 @@
   const WHEEL_LINE_HEIGHT = 19
 
   @Component({
-    name: 'neko-video',
+    name: 'aris-video',
     components: {
-      'neko-emote': Emote,
-      'neko-resolution': Resolution,
-      'neko-clipboard': Clipboard,
+      'aris-emote': Emote,
+      'aris-resolution': Resolution,
+      'aris-clipboard': Clipboard,
+      'aris-chat': Chat,
     },
   })
   export default class extends Vue {
@@ -253,6 +330,12 @@
     private fullscreen = false
     private mutedOverlay = true
     private lastTextAreaValue = ''
+    private isMobile = false
+    private mobileMedia: MediaQueryList | null = null
+
+    get overlayChatOpen() {
+      return this.$accessor.client.overlayChatOpen
+    }
 
     get admin() {
       return this.$accessor.user.admin
@@ -480,9 +563,14 @@
 
       onFullscreenChange(this._player, () => {
         this.fullscreen = isFullscreen()
+        this.$accessor.client.setFullscreen(this.fullscreen)
         this.fullscreen ? lockKeyboard() : unlockKeyboard()
         this.onResize()
       })
+
+      this.mobileMedia = window.matchMedia('(max-width: 768px)')
+      this.isMobile = this.mobileMedia.matches
+      this.mobileMedia.addEventListener('change', this.onMobileMediaChange)
 
       this._video.addEventListener('canplaythrough', () => {
         this.$accessor.video.setPlayable(true)
@@ -536,8 +624,32 @@
 
     beforeDestroy() {
       this.observer.disconnect()
+      this.mobileMedia?.removeEventListener('change', this.onMobileMediaChange)
       this.$accessor.video.setPlayable(false)
       /* Guacamole Keyboard does not provide destroy functions */
+    }
+
+    onMobileMediaChange = (event: MediaQueryListEvent) => {
+      this.isMobile = event.matches
+    }
+
+    toggleOverlayChat() {
+      this.$accessor.client.toggleOverlayChat()
+    }
+
+    exitFullscreen() {
+      const doc = document as Document & { webkitExitFullscreen?: () => void }
+      if (document.exitFullscreen) {
+        document.exitFullscreen()
+      } else if (doc.webkitExitFullscreen) {
+        doc.webkitExitFullscreen()
+      }
+    }
+
+    openOverlaySettings() {
+      this.$accessor.client.setTab('settings')
+      this.$accessor.client.setSide(true)
+      this.exitFullscreen()
     }
 
     get hasMacOSKbd() {

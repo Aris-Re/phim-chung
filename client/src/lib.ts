@@ -1,4 +1,4 @@
-import { accessor as neko } from './store'
+import { accessor as aris } from './store'
 import { PluginObject } from 'vue'
 
 // Plugins
@@ -36,7 +36,7 @@ Vue.use(ToolTip)
 const exportMixin = {
   computed: {
     $accessor() {
-      return neko
+      return aris
     },
     $client() {
       return window.$client
@@ -56,22 +56,55 @@ function extend(component: any) {
   return component.use(plugini18n).use(Logger).use(Axios).use(Swal).use(Anime).use(Client).extend(exportMixin)
 }
 
-export const NekoConnect = extend(Connect)
-export const NekoVideo = extend(Video)
-export const NekoMenu = extend(Menu)
-export const NekoSide = extend(Side)
-export const NekoControls = extend(Controls)
-export const NekoMembers = extend(Members)
-export const NekoEmotes = extend(Emotes)
-export const NekoAbout = extend(About)
-export const NekoHeader = extend(Header)
-export const NekoChat = extend(Chat)
-export const NekoClipboard = extend(Clipboard)
-export const NekoEmoji = extend(Emoji)
-export const NekoEmote = extend(Emote)
-export const NekoMarkdown = extend(Markdown)
-export const NekoContext = extend(Context)
-export const NekoAvatar = extend(Avatar)
+export const ArisConnect = extend(Connect)
+export const ArisVideo = extend(Video)
+export const ArisMenu = extend(Menu)
+export const ArisSide = extend(Side)
+export const ArisControls = extend(Controls)
+export const ArisMembers = extend(Members)
+export const ArisEmotes = extend(Emotes)
+export const ArisAbout = extend(About)
+export const ArisHeader = extend(Header)
+export const ArisChat = extend(Chat)
+export const ArisClipboard = extend(Clipboard)
+export const ArisEmoji = extend(Emoji)
+export const ArisEmote = extend(Emote)
+export const ArisMarkdown = extend(Markdown)
+export const ArisContext = extend(Context)
+export const ArisAvatar = extend(Avatar)
 
-neko.initialise()
-export default neko
+/** @deprecated Use Aris* exports */
+export const NekoConnect = ArisConnect
+/** @deprecated Use Aris* exports */
+export const NekoVideo = ArisVideo
+/** @deprecated Use Aris* exports */
+export const NekoMenu = ArisMenu
+/** @deprecated Use Aris* exports */
+export const NekoSide = ArisSide
+/** @deprecated Use Aris* exports */
+export const NekoControls = ArisControls
+/** @deprecated Use Aris* exports */
+export const NekoMembers = ArisMembers
+/** @deprecated Use Aris* exports */
+export const NekoEmotes = ArisEmotes
+/** @deprecated Use Aris* exports */
+export const NekoAbout = ArisAbout
+/** @deprecated Use Aris* exports */
+export const NekoHeader = ArisHeader
+/** @deprecated Use Aris* exports */
+export const NekoChat = ArisChat
+/** @deprecated Use Aris* exports */
+export const NekoClipboard = ArisClipboard
+/** @deprecated Use Aris* exports */
+export const NekoEmoji = ArisEmoji
+/** @deprecated Use Aris* exports */
+export const NekoEmote = ArisEmote
+/** @deprecated Use Aris* exports */
+export const NekoMarkdown = ArisMarkdown
+/** @deprecated Use Aris* exports */
+export const NekoContext = ArisContext
+/** @deprecated Use Aris* exports */
+export const NekoAvatar = ArisAvatar
+
+aris.initialise()
+export default aris

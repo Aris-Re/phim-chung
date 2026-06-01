@@ -272,10 +272,10 @@
   import { FileTransfer, FileListItem } from '~/neko/types'
 
   @Component({
-    name: 'neko-files',
+    name: 'aris-files',
     components: {
-      'neko-markdown': Markdown,
-      'neko-context': Content,
+      'aris-markdown': Markdown,
+      'aris-context': Content,
     },
   })
   export default class extends Vue {

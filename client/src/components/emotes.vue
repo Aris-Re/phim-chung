@@ -92,7 +92,7 @@
   import { VueContext } from 'vue-context'
 
   @Component({
-    name: 'neko-emotes',
+    name: 'aris-emotes',
     components: {
       'vue-context': VueContext,
     },
